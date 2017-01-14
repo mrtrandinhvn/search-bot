@@ -12,7 +12,9 @@
   "author": "mrtrandinhvn@gmail.com",
   "license": "MIT",
   "dependencies": {
+    "grommet": "latest",
     "react": "latest",
+    "react-dnd": "^2.1.4",
     "react-dom": "latest",
     "react-redux": "latest",
     "redux": "latest"
@@ -24,9 +26,15 @@
     "babel-plugin-transform-object-rest-spread": "latest",
     "babel-preset-es2015": "latest",
     "babel-preset-react": "latest",
+    "css-loader": "latest",
     "eslint": "latest",
     "eslint-plugin-react": "latest",
     "expect": "latest",
+    "file-loader": "^0.9.0",
+    "node-sass": "^4.3.0",
+    "postcss-loader": "^1.2.2",
+    "sass-loader": "latest",
+    "style-loader": "latest",
     "webpack": "latest"
   }
 }

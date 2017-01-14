@@ -23,8 +23,17 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                loader: "style-loader!css-loader!postcss-loader"
+                loader: "style-loader!css-loader?minimize!postcss-loader"
+            },
+            {
+                test: /\.scss$/,
+                loader: "style!css?minimize!postcss!sass?outputStyle=compressed",
             }
+        ]
+    },
+    sassLoader: {
+        includePaths: [
+            "./node_modules"
         ]
     },
     postcss: [autoprefixer({ browsers: ["last 2 versions"] })],
@@ -35,10 +44,8 @@ module.exports = {
         })
     ],
     resolve: {
-        extensions: ["", ".js", ".jsx"],
-        root: [
-
-        ]
+        extensions: ["", ".js", ".jsx", ".css", ".scss"],
+        root: []
     },
     externals: {
 
