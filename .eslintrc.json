@@ -25,6 +25,7 @@
         //     "error",
         //     "windows"
         // ],
+        "eqeqeq": "error",
         "quotes": [
             "error",
             "double"

@@ -16,6 +16,7 @@
     "react": "latest",
     "react-dnd": "^2.1.4",
     "react-dom": "latest",
+    "react-dropzone": "^3.9.0",
     "react-redux": "latest",
     "redux": "latest"
   },
