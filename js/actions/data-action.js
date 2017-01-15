@@ -10,7 +10,7 @@ export const UNDEFINED = "UNDEFINED";
 export const NOT_FOUND = "NOT_FOUND";
 export const EXISTS = "EXISTS";
 
-export const createAddDataAction = (keywords) => {
+export const createImportDataAction = (keywords) => {
     const data = keywords.map((kw, index) => {
         return {
             id: index,

@@ -12,7 +12,7 @@ import Button from "grommet/components/Button";
 import Logo from "grommet/components/SVGIcon";
 import Paragraph from "grommet/components/Paragraph";
 import Grid from "../lib/gs/gs-react-grid";
-import { createAddDataAction } from "./actions/data-action";
+import { createImportDataAction } from "./actions/data-action";
 import { connect, Provider } from "react-redux";
 import { createStore } from "redux";
 import Dropzone from "react-dropzone";
@@ -35,7 +35,7 @@ const DZContainer = connect(null, (dispatch) => {
         onDrop: (files) => {
             var reader = new FileReader();
             reader.onload = function () {
-                dispatch(createAddDataAction(reader.result.split("\r\n")));
+                dispatch(createImportDataAction(reader.result.split("\r\n")));
             };
             reader.readAsText(files[0]);
         }
