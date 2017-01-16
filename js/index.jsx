@@ -2,15 +2,13 @@ import "../css/index";
 import "grommet/scss/vanilla/index";
 import React from "react";
 import { render } from "react-dom";
-import Header from "grommet/components/Header";
-import Title from "grommet/components/Title";
+import MyHeader from "./components/header";
 import Box from "grommet/components/Box";
 import Article from "grommet/components/Article";
 import Section from "grommet/components/Section";
-import Footer from "grommet/components/Footer";
-import Button from "grommet/components/Button";
-import Logo from "grommet/components/SVGIcon";
-import Paragraph from "grommet/components/Paragraph";
+import MyFooter from "./components/footer";
+import SearchBtn from "./components/search-btn";
+
 import Grid from "../lib/gs/gs-react-grid";
 import { createImportDataAction } from "./actions/data-action";
 import { connect, Provider } from "react-redux";
@@ -49,24 +47,30 @@ const GridContainer = connect(
     },
     null
 )(Grid);
+const SearchBtnContainer = connect(
+    (state) => {
+        return {
+            data: state.data
+        };
+    }, (dispatch, props) => {
+        return {
+            onClick: () => {
+                debugger;
+                console.log(dispatch);
+                console.log(props);
+            }
+        };
+    })(SearchBtn);
+
 const MainApp = () => {
     return (
         <Article>
             <Box align="center"
                 colorIndex="light-2">
-                <Header
-                    fixed={false}
-                    float={false}
-                    size="medium"
-                    splash={false}>
-                    <Title>
-                        <Box align="center">
-                            Google Search Bot
-                        </Box>
-                    </Title>
-                </Header>
+                <MyHeader></MyHeader>
                 <Section>
-                    <Box align="center"
+                    <Box
+                        align="center"
                         full={true}
                         colorIndex="light-2"
                         >
@@ -77,10 +81,10 @@ const MainApp = () => {
                             <DZContainer
                                 multiple={false}
                                 style={{
-                                    borderWidth: "2px",
-                                    borderColor: "black",
+                                    borderWidth: "5px",
+                                    borderColor: "#cecccc",
                                     borderStyle: "dashed",
-                                    borderRadius: "4px",
+                                    borderRadius: "5px",
                                     padding: "30px",
                                     transition: "all 0.5s",
                                 }}
@@ -94,10 +98,11 @@ const MainApp = () => {
                         </Box>
                         <Box
                             margin="small"
-                            full="horizontal"
+                            pad="small"
                             size={
                                 {
-                                    height: "medium"
+                                    height: "medium",
+                                    width: "xxlarge"
                                 }
                             }
                             colorIndex="light-1"
@@ -113,22 +118,19 @@ const MainApp = () => {
                                 sortAscending={initialState.sortAscending}
                                 >
                             </GridContainer>
+
                         </Box>
-                        <Button label="Search"
-                            type="submit"
-                            primary={true}
-                            onClick={() => { console.log(1); } } >
-                        </Button>
+                        <Box>
+                            <SearchBtnContainer
+                                label="Search"
+                                type="button"
+                                primary={true}
+                                >
+                            </SearchBtnContainer>
+                        </Box>
                     </Box>
                 </Section>
-                <Footer>
-                    <Header justify="between">
-                        <Logo></Logo>
-                        <Paragraph margin="none">
-                            © 2017 mrtrandinhvn
-                        </Paragraph>
-                    </Header>
-                </Footer>
+                <MyFooter></MyFooter>
             </Box>
         </Article>
     );
