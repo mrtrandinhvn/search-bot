@@ -2,13 +2,56 @@ import TableHeader from "grommet/components/TableHeader";
 import Table from "grommet/components/Table";
 import TableRow from "grommet/components/TableRow";
 import React from "react";
-
-const Cell = ({value}) => {
+import "./gs-react-grid.css";
+import { ERROR, DONE, IN_PROGRESS } from "../../js/actions/data-action";
+const cellType = {
+    link: "LINK",
+    text: "TEXT"
+};
+const Cell = ({type, value}) => {
     return (
-        <td>{value}</td>
+        <td className="gs-react-cell">{(() => {
+            switch (type) {
+                case cellType.link:
+                    return (
+                        <a href={value}>{value}</a>
+                    );
+                default:
+                    switch (value) {
+                        case ERROR:
+                            return (
+                                <span style={{
+                                    backgroundColor: "red",
+                                    padding: "5px"
+                                }}>{value}</span>
+                            );
+                        case DONE:
+                            return (
+                                <span style={{
+                                    backgroundColor: "green",
+                                    padding: "5px"
+                                }}>{value}</span>
+                            );
+                        case IN_PROGRESS:
+                            return (
+                                <span style={{
+                                    backgroundColor: "yellow",
+                                    padding: "5px"
+                                }}>{value}</span>
+                            );
+                        default:
+                            return (
+                                <span style={{
+                                    padding: "5px"
+                                }}>{value}</span>
+                            );
+                    }
+            }
+        })()}</td>
     );
 };
 Cell.propTypes = {
+    type: React.PropTypes.string,
     value: React.PropTypes.string
 };
 const Row = ({fields, data}) => {
@@ -16,9 +59,16 @@ const Row = ({fields, data}) => {
         <TableRow>
             {
                 fields.map((field, index) => {
-                    return (
-                        <Cell key={index} value={data[field] + ""}></Cell>
-                    );
+                    switch (field) {
+                        case "searchLink":
+                            return (
+                                <Cell key={index} value={data[field] + ""} type={cellType.link}></Cell>
+                            );
+                        default:
+                            return (
+                                <Cell key={index} value={data[field] + ""} type={cellType.text}></Cell>
+                            );
+                    }
                 })
             }
         </TableRow>
@@ -32,7 +82,8 @@ Row.propTypes = {
 const GsGrid = ({columns, data, sortIndex, sortAscending}) => {
     return (
         <Table selectable={true}
-            scrollable={false}>
+            scrollable={false}
+            className="gs-react-grid">
             <TableHeader labels={
                 columns.map((col) => {
                     return col.label;

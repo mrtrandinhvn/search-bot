@@ -4,6 +4,7 @@ export const CHANGE_ROW_STATUS = "CHANGE_ROW_STATUS";
 export const IN_PROGRESS = "IN_PROGRESS";
 export const NOT_STARTED = "NOT_STARTED";
 export const DONE = "DONE";
+export const ERROR = "ERROR";
 
 // conclusions
 export const UNDEFINED = "UNDEFINED";
@@ -15,7 +16,7 @@ export const createImportDataAction = (keywords) => {
         return {
             id: index,
             keyword: kw,
-            searchLink: kw + " link",
+            searchLink: "",
             status: NOT_STARTED,
             results: 0,
             conclusion: UNDEFINED
@@ -27,7 +28,7 @@ export const createImportDataAction = (keywords) => {
     };
 };
 
-export const createChangeRowStatusAction = (id, status, results, conclusions) => {
+export const createChangeRowStatusAction = (id = -1, status = NOT_STARTED, results = 0, conclusions = UNDEFINED) => {
     return {
         type: CHANGE_ROW_STATUS,
         data: {

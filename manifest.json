@@ -14,12 +14,16 @@
     },
     "background": {
         "scripts": [
-            "js/event-page.js"
+            "js/background-page.js"
         ],
         "persistent": false
     },
     "permissions": [
-        "tabs"
+        "tabs",
+        "http://www.google.co.uk/",
+        "https://www.google.co.uk/",
+        "http://ipv4.google.com/",
+        "https://ipv4.google.com/"
     ],
     "web_accessible_resources": [],
     "manifest_version": 2,

@@ -8,13 +8,15 @@ import Article from "grommet/components/Article";
 import Section from "grommet/components/Section";
 import MyFooter from "./components/footer";
 import SearchBtn from "./components/search-btn";
-
 import Grid from "../lib/gs/gs-react-grid";
-import { createImportDataAction } from "./actions/data-action";
+import { createImportDataAction, createChangeRowStatusAction, UNDEFINED, IN_PROGRESS, DONE, ERROR, NOT_FOUND, EXISTS } from "./actions/data-action";
+import { createChangeSiteAction } from "./actions/target-site-action";
 import { connect, Provider } from "react-redux";
 import { createStore } from "redux";
 import Dropzone from "react-dropzone";
-import { mainReducer } from "./reducers/data-reducers";
+import { mainReducer } from "./reducers/main-reducer";
+import $ from "../lib/gs/gs-common";
+import TextInput from "grommet/components/TextInput";
 
 const columns = [
     { field: "keyword", label: "Keyword" },
@@ -52,16 +54,69 @@ const SearchBtnContainer = connect(
         return {
             data: state.data
         };
-    }, (dispatch, props) => {
+    }, null,
+    (stateProps, dispatchProps, ownProps) => {
+        // mergeProps
+        const {dispatch} = dispatchProps;
+        const items = stateProps.data;
         return {
+            ...ownProps,
+            ...stateProps,
             onClick: () => {
-                debugger;
-                console.log(dispatch);
-                console.log(props);
+                let i = 0;
+                console.log("START SEARCHING...");
+                const doSearch = (rowIndex) => {
+                    if (i < 6) {
+                        const item = items[i];
+                        dispatch(createChangeRowStatusAction(rowIndex, IN_PROGRESS, 0, NOT_FOUND));
+                        $.ajax({
+                            url: item.searchLink,
+                            success: (text) => {
+                                let conclusion;
+                                if (text.indexOf("did not match any documents.") > -1) {
+                                    conclusion = NOT_FOUND;
+                                } else {
+                                    conclusion = EXISTS;
+                                }
+                                dispatch(createChangeRowStatusAction(rowIndex, DONE, 0, conclusion));
+                            },
+                            error: () => {
+                                dispatch(createChangeRowStatusAction(rowIndex, ERROR, 0, UNDEFINED));
+                            }
+                        });
+                        i++;
+                    } else {
+                        console.log(i);
+                        window.clearInterval(searchInterval);
+                        console.log("STOP SEARCHING");
+                    }
+                };
+                doSearch(i); // initial run
+                const searchInterval = window.setInterval(function () {
+                    doSearch(i);
+                }, 10000);
             }
         };
-    })(SearchBtn);
-
+    }
+)(SearchBtn);
+let changeTimeout;
+const SiteInputContainer = connect(() => {
+    return {
+        // value: state.targetSite ? state.targetSite : ""
+    };
+}, (dispatch) => {
+    return {
+        onDOMChange: (event) => {
+            if (changeTimeout) {
+                window.clearTimeout(changeTimeout);
+            }
+            const value = event.target.value;
+            changeTimeout = window.setTimeout(() => {
+                dispatch(createChangeSiteAction(value));
+            }, 500);
+        }
+    };
+})(TextInput);
 const MainApp = () => {
     return (
         <Article>
@@ -72,11 +127,15 @@ const MainApp = () => {
                     <Box
                         align="center"
                         full={true}
-                        colorIndex="light-2"
                         >
                         <Box
                             margin="small"
                             colorIndex="light-1"
+                            size={
+                                {
+                                    width: "xxlarge"
+                                }
+                            }
                             >
                             <DZContainer
                                 multiple={false}
@@ -95,8 +154,16 @@ const MainApp = () => {
                                     textAlign: "center"
                                 }}>Try dropping one file here, or click to select a file to upload.</div>
                             </DZContainer>
+                            <SiteInputContainer
+                                placeHolder="Enter the site where you want to search (start with 'www')"
+                                style={{
+                                    margin: "10px 0 5px 0"
+                                }}
+                                >
+                            </SiteInputContainer>
                         </Box>
                         <Box
+                            align="center"
                             margin="small"
                             pad="small"
                             size={
@@ -116,11 +183,17 @@ const MainApp = () => {
                                 columns={columns}
                                 sortIndex={initialState.sortIndex}
                                 sortAscending={initialState.sortAscending}
+                                style={{}}
                                 >
                             </GridContainer>
-
                         </Box>
-                        <Box>
+                        <Box
+                            align="center"
+                            size={
+                                {
+                                    width: "xxlarge"
+                                }
+                            }>
                             <SearchBtnContainer
                                 label="Search"
                                 type="button"
@@ -132,7 +205,7 @@ const MainApp = () => {
                 </Section>
                 <MyFooter></MyFooter>
             </Box>
-        </Article>
+        </Article >
     );
 };
 render(
