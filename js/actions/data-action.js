@@ -6,7 +6,7 @@ export const NOT_STARTED = "NOT_STARTED";
 export const DONE = "DONE";
 export const ERROR = "ERROR";
 
-// conclusions
+// conclusion
 export const UNDEFINED = "UNDEFINED";
 export const NOT_FOUND = "NOT_FOUND";
 export const EXISTS = "EXISTS";
@@ -14,6 +14,7 @@ export const EXISTS = "EXISTS";
 export const createImportDataAction = (keywords) => {
     const data = keywords.map((kw, index) => {
         return {
+            number: index + 1,
             id: index,
             keyword: kw,
             searchLink: "",
@@ -28,14 +29,14 @@ export const createImportDataAction = (keywords) => {
     };
 };
 
-export const createChangeRowStatusAction = (id = -1, status = NOT_STARTED, results = 0, conclusions = UNDEFINED) => {
+export const createChangeRowStatusAction = (id = -1, status = NOT_STARTED, results = 0, conclusion = UNDEFINED) => {
     return {
         type: CHANGE_ROW_STATUS,
         data: {
             id,
             status,
             results,
-            conclusions
+            conclusion
         }
     };
 };

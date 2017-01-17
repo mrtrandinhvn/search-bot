@@ -8,6 +8,7 @@ import Article from "grommet/components/Article";
 import Section from "grommet/components/Section";
 import MyFooter from "./components/footer";
 import SearchBtn from "./components/search-btn";
+import ExportBtn from "./components/export-btn";
 import Grid from "../lib/gs/gs-react-grid";
 import { createImportDataAction, createChangeRowStatusAction, UNDEFINED, IN_PROGRESS, DONE, ERROR, NOT_FOUND, EXISTS } from "./actions/data-action";
 import { createChangeSiteAction } from "./actions/target-site-action";
@@ -19,6 +20,7 @@ import $ from "../lib/gs/gs-common";
 import TextInput from "grommet/components/TextInput";
 
 const columns = [
+    { field: "number", label: "No" },
     { field: "keyword", label: "Keyword" },
     { field: "searchLink", label: "Search Url" },
     { field: "status", label: "Status" },
@@ -99,6 +101,35 @@ const SearchBtnContainer = connect(
         };
     }
 )(SearchBtn);
+const ExportBtnContainer = connect(
+    (state) => {
+        return {
+            data: state.data,
+            onClick: () => {
+                const items = state.data;
+                // exporting file
+
+                let csvContent = "data:text/csv;charset=utf-8,No,Keyword,Status,Conclusion\r\n";
+                items.map((item) => {
+                    let row = "";
+                    ["number", "keyword", "status", "conclusion"].map((field) => {
+                        row += item[field] + ",";
+                    });
+                    csvContent += row.substr(0, row.length - 1);// remove the last , character
+                    csvContent += "\r\n";
+                });
+                const encodedUri = encodeURI(csvContent);
+                // window.open(encodedUri);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("target", "_blank");
+                link.setAttribute("rel", "noopener");
+                link.setAttribute("download", "Search on " + state.targetSite + ".csv");
+                link.click();
+            }
+        };
+    }, null
+)(ExportBtn);
 let changeTimeout;
 const SiteInputContainer = connect(() => {
     return {
@@ -113,7 +144,7 @@ const SiteInputContainer = connect(() => {
             const value = event.target.value;
             changeTimeout = window.setTimeout(() => {
                 dispatch(createChangeSiteAction(value));
-            }, 500);
+            }, 700);
         }
     };
 })(TextInput);
@@ -154,13 +185,22 @@ const MainApp = () => {
                                     textAlign: "center"
                                 }}>Try dropping one file here, or click to select a file to upload.</div>
                             </DZContainer>
-                            <SiteInputContainer
-                                placeHolder="Enter the site where you want to search (start with 'www')"
-                                style={{
-                                    margin: "10px 0 5px 0"
-                                }}
+                            <Box
+                                size="small"
                                 >
-                            </SiteInputContainer>
+                                <SiteInputContainer
+                                    placeHolder="Enter the site where you want to search (start with 'www')"
+                                    style={{
+                                        margin: "10px 0 5px 0"
+                                    }}
+                                    >
+                                </SiteInputContainer>
+                            </Box>
+                            <ExportBtnContainer label="Export to CSV"
+                                type="button"
+                                primary={false}
+                                >
+                            </ExportBtnContainer>
                         </Box>
                         <Box
                             align="center"

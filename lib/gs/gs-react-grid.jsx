@@ -81,36 +81,38 @@ Row.propTypes = {
 // const columns=[{field:"A", label:"aaa"}]
 const GsGrid = ({columns, data, sortIndex, sortAscending}) => {
     return (
-        <Table selectable={true}
-            scrollable={false}
-            className="gs-react-grid">
-            <TableHeader labels={
-                columns.map((col) => {
-                    return col.label;
-                })
-            }
-                sortIndex={sortIndex}
-                sortAscending={sortAscending} >
-            </TableHeader>
-            <tbody>
-                {
-                    data.map((item, index) => {
-                        return (
-                            <Row key={item.id ? item.id : index}
-                                data={item}
-                                fields={
-                                    columns.map(
-                                        (col) => {
-                                            return col.field;
-                                        }
-                                    )
-                                }></Row>
-                        );
+        <div>
+            <div>{data.length} keyword(s)</div>
+            <Table selectable={true}
+                scrollable={false}
+                className="gs-react-grid">
+                <TableHeader labels={
+                    columns.map((col) => {
+                        return col.label;
                     })
                 }
-            </tbody>
-        </Table>
-
+                    sortIndex={sortIndex}
+                    sortAscending={sortAscending} >
+                </TableHeader>
+                <tbody>
+                    {
+                        data.map((item, index) => {
+                            return (
+                                <Row key={item.id ? item.id : index}
+                                    data={item}
+                                    fields={
+                                        columns.map(
+                                            (col) => {
+                                                return col.field;
+                                            }
+                                        )
+                                    }></Row>
+                            );
+                        })
+                    }
+                </tbody>
+            </Table>
+        </div>
     );
 };
 GsGrid.propTypes = {

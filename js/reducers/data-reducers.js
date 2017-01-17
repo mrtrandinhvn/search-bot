@@ -18,7 +18,7 @@ const rowReducer = (state = {}, action = { type: null, data: null }) => {
                 ...state,
                 status: action.data.status,
                 results: action.data.results,
-                conclusions: action.data.conclusions
+                conclusion: action.data.conclusion
             };
         case CHANGE_SITE:
             return {
