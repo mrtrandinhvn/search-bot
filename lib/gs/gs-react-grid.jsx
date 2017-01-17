@@ -14,7 +14,7 @@ const Cell = ({type, value}) => {
             switch (type) {
                 case cellType.link:
                     return (
-                        <a href={value}>{value}</a>
+                        <a href={value} target="_blank" rel="noopener">{value}</a>
                     );
                 default:
                     switch (value) {
