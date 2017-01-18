@@ -1,11 +1,10 @@
 import { dataReducer } from "./data-reducers";
 import { targetSiteReducer } from "./target-site-reducers";
+import { combineReducers } from "redux";
 
-export const mainReducer = (state = {}, action) => {
-    return {
-        targetSite: targetSiteReducer(state.targetSite, action),
-        data: (() => {
-            return dataReducer(state.data, action, targetSiteReducer(state.targetSite, action));
-        })()
-    };
-};
+export const mainReducer = combineReducers({
+    data: dataReducer,
+    targetSite: targetSiteReducer,
+    sortIndex: () => 1,
+    sortAscending: () => true
+});

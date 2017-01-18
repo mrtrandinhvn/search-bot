@@ -11,13 +11,13 @@ export const UNDEFINED = "UNDEFINED";
 export const NOT_FOUND = "NOT_FOUND";
 export const EXISTS = "EXISTS";
 
-export const createImportDataAction = (keywords) => {
+export const createImportDataAction = (keywords, searchLink = "") => {
     const data = keywords.map((kw, index) => {
         return {
             number: index + 1,
             id: index,
             keyword: kw,
-            searchLink: "",
+            searchLink: searchLink,
             status: NOT_STARTED,
             results: 0,
             conclusion: UNDEFINED

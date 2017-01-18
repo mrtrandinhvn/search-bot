@@ -54,16 +54,16 @@ Cell.propTypes = {
     type: React.PropTypes.string,
     value: React.PropTypes.string
 };
-const Row = ({fields, data}) => {
+const Row = ({fields, data, onClick}) => {
     return (
-        <TableRow>
+        <TableRow
+            onClick={() => {
+                onClick(data.id);
+            } }
+            >
             {
                 fields.map((field, index) => {
                     switch (field) {
-                        case "searchLink":
-                            return (
-                                <Cell key={index} value={data[field] + ""} type={cellType.link}></Cell>
-                            );
                         default:
                             return (
                                 <Cell key={index} value={data[field] + ""} type={cellType.text}></Cell>
@@ -76,49 +76,53 @@ const Row = ({fields, data}) => {
 };
 Row.propTypes = {
     fields: React.PropTypes.array.isRequired,
-    data: React.PropTypes.object.isRequired
+    data: React.PropTypes.object.isRequired,
+    onClick: React.PropTypes.func
 };
 // const columns=[{field:"A", label:"aaa"}]
-const GsGrid = ({columns, data, sortIndex, sortAscending}) => {
+const GsGrid = ({columns, data, sortIndex, sortAscending, onRowClick}) => {
     return (
-        <div>
-            <div>{data.length} keyword(s)</div>
-            <Table selectable={true}
-                scrollable={false}
-                className="gs-react-grid">
-                <TableHeader labels={
+        <Table selectable={true}
+            scrollable={false}
+            className="gs-react-grid">
+            <TableHeader
+                labels={
                     columns.map((col) => {
                         return col.label;
                     })
                 }
-                    sortIndex={sortIndex}
-                    sortAscending={sortAscending} >
-                </TableHeader>
-                <tbody>
-                    {
-                        data.map((item, index) => {
-                            return (
-                                <Row key={item.id ? item.id : index}
-                                    data={item}
-                                    fields={
-                                        columns.map(
-                                            (col) => {
-                                                return col.field;
-                                            }
-                                        )
-                                    }></Row>
-                            );
-                        })
-                    }
-                </tbody>
-            </Table>
-        </div>
+                sortIndex={sortIndex}
+                sortAscending={sortAscending}
+                >
+            </TableHeader>
+            <tbody>
+                {
+                    data.map((item, index) => {
+                        return (
+                            <Row key={item.id ? item.id : index}
+                                data={item}
+                                fields={
+                                    columns.map(
+                                        (col) => {
+                                            return col.field;
+                                        }
+                                    )
+                                }
+                                onClick={onRowClick}
+                                >
+                            </Row>
+                        );
+                    })
+                }
+            </tbody>
+        </Table>
     );
 };
 GsGrid.propTypes = {
     columns: React.PropTypes.array.isRequired,
     data: React.PropTypes.array.isRequired,
     sortIndex: React.PropTypes.number.isRequired,
-    sortAscending: React.PropTypes.bool.isRequired
+    sortAscending: React.PropTypes.bool.isRequired,
+    onRowClick: React.PropTypes.func
 };
 export default GsGrid;

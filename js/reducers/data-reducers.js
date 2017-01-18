@@ -20,11 +20,12 @@ const rowReducer = (state = {}, action = { type: null, data: null }) => {
                 results: action.data.results,
                 conclusion: action.data.conclusion
             };
-        case CHANGE_SITE:
-            return {
-                ...state,
-                searchLink: generateSearchLink(action.newUrl, state.keyword)
-            };
+        // case CHANGE_SITE:
+            // return {
+            //     ...state,
+            //     searchLink: generateSearchLink(action.newUrl, state.keyword)
+            // };
+            // return state;
         default:
             return state;
     }
@@ -35,7 +36,7 @@ export const dataReducer = (state = [], action = { type: null, data: [] }) => {
             return action.data.map((item) => {
                 return {
                     ...item,
-                    searchLink: generateSearchLink(item.searchLink, item.keyword)
+                    // searchLink: generateSearchLink(item.searchLink, item.keyword)
                 };
             }); // overwrite data array
         case CHANGE_ROW_STATUS:
