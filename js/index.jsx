@@ -185,22 +185,22 @@ const MainApp = () => {
                                     textAlign: "center"
                                 }}>Try dropping one file here, or click to select a file to upload.</div>
                             </DZContainer>
+                            <SiteInputContainer
+                                placeHolder="Enter the site where you want to search (start with 'www')"
+                                style={{
+                                    margin: "10px 0 5px 0"
+                                }}
+                                >
+                            </SiteInputContainer>
                             <Box
                                 size="small"
                                 >
-                                <SiteInputContainer
-                                    placeHolder="Enter the site where you want to search (start with 'www')"
-                                    style={{
-                                        margin: "10px 0 5px 0"
-                                    }}
+                                <ExportBtnContainer label="Export to CSV"
+                                    type="button"
+                                    primary={false}
                                     >
-                                </SiteInputContainer>
+                                </ExportBtnContainer>
                             </Box>
-                            <ExportBtnContainer label="Export to CSV"
-                                type="button"
-                                primary={false}
-                                >
-                            </ExportBtnContainer>
                         </Box>
                         <Box
                             align="center"

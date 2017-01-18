@@ -2,9 +2,7 @@ import React from "react";
 import Button from "grommet/components/Button";
 const ExportBtn = (props) => {
     return (
-        <div>
-            <Button {...props}></Button>
-        </div>
+        <Button {...props}></Button>
     );
 };
 export default ExportBtn;
