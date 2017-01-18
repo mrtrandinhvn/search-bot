@@ -13,7 +13,6 @@ import { connect, Provider } from "react-redux";
 import { createStore } from "redux";
 
 // redux's files
-import { createImportDataAction, createChangeRowStatusAction, UNDEFINED, IN_PROGRESS, DONE, ERROR, NOT_FOUND, EXISTS } from "./actions/data-action";
 import { mainReducer } from "./reducers/main-reducer";
 
 // internal libraries
@@ -23,7 +22,6 @@ import $ from "../lib/gs/gs-common";
 import MyHeader from "./components/header";
 import MainApp from "./components/main-app";
 import MyFooter from "./components/footer";
-import SearchBtn from "./components/search-btn";
 
 // ================================= END IMPORT ===============================================
 // ================================= END IMPORT ===============================================
@@ -37,57 +35,6 @@ const columns = [
     // { field: "results", label: "Results" },
     { field: "conclusion", label: "Conclusion" },
 ];
-
-const SearchBtnContainer = connect(
-    (state) => {
-        return {
-            data: state.data
-        };
-    }, null,
-    (stateProps, dispatchProps, ownProps) => {
-        // mergeProps
-        const {dispatch} = dispatchProps;
-        const items = stateProps.data;
-        return {
-            ...ownProps,
-            ...stateProps,
-            onClick: () => {
-                let i = 0;
-                console.log("START SEARCHING...");
-                const doSearch = (rowIndex) => {
-                    if (i < 6) {
-                        const item = items[i];
-                        dispatch(createChangeRowStatusAction(rowIndex, IN_PROGRESS, 0, NOT_FOUND));
-                        $.ajax({
-                            url: item.searchLink,
-                            success: (text) => {
-                                let conclusion;
-                                if (text.indexOf("did not match any documents.") > -1) {
-                                    conclusion = NOT_FOUND;
-                                } else {
-                                    conclusion = EXISTS;
-                                }
-                                dispatch(createChangeRowStatusAction(rowIndex, DONE, 0, conclusion));
-                            },
-                            error: () => {
-                                dispatch(createChangeRowStatusAction(rowIndex, ERROR, 0, UNDEFINED));
-                            }
-                        });
-                        i++;
-                    } else {
-                        console.log(i);
-                        window.clearInterval(searchInterval);
-                        console.log("STOP SEARCHING");
-                    }
-                };
-                doSearch(i); // initial run
-                const searchInterval = window.setInterval(function () {
-                    doSearch(i);
-                }, 10000);
-            }
-        };
-    }
-)(SearchBtn);
 
 const MainAppContainer = connect(
     (state) => {

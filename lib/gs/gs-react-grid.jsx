@@ -3,7 +3,7 @@ import Table from "grommet/components/Table";
 import TableRow from "grommet/components/TableRow";
 import React from "react";
 import "./gs-react-grid.css";
-import { ERROR, DONE, IN_PROGRESS } from "../../js/actions/data-action";
+import { ERROR, DONE, IN_PROGRESS, EXISTS, NOT_FOUND } from "../../js/actions/data-action";
 const cellType = {
     link: "LINK",
     text: "TEXT"
@@ -19,6 +19,7 @@ const Cell = ({type, value}) => {
                 default:
                     switch (value) {
                         case ERROR:
+                        case NOT_FOUND:
                             return (
                                 <span style={{
                                     backgroundColor: "red",
@@ -26,6 +27,7 @@ const Cell = ({type, value}) => {
                                 }}>{value}</span>
                             );
                         case DONE:
+                        case EXISTS:
                             return (
                                 <span style={{
                                     backgroundColor: "green",

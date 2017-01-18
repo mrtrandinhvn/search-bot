@@ -1,7 +1,7 @@
 import { IMPORT_DATA, CHANGE_ROW_STATUS } from "../actions/data-action.js";
 import { CHANGE_SITE } from "../actions/target-site-action";
 
-const generateSearchLink = (url = "", keyword = "") => {
+export const generateSearchLink = (url = "", keyword = "") => {
     return "https://www.google.co.uk/search?hl=en&as_q=heels&as_epq=&as_oq=&as_eq=&as_nlo=&as_nhi=&lr=&cr=&as_qdr=all&as_sitesearch=http%3A%2F%2F"
         + window.encodeURI(url)
         + "&as_occt=title&safe=images&as_filetype=&as_rights=#hl=en&as_qdr=all&q=allintitle:+"

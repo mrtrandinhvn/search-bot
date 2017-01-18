@@ -2,7 +2,7 @@
 import React from "react";
 import Box from "grommet/components/Box";
 import Button from "grommet/components/Button";
-import TextInput from "grommet/components/TextInput";
+import Input from "grommet/components/TextInput";
 import Dropzone from "react-dropzone";
 // components
 
@@ -12,11 +12,11 @@ import { createImportDataAction, createChangeRowStatusAction, UNDEFINED, IN_PROG
 // internal libraries
 import $ from "../../lib/gs/gs-common";
 import Grid from "../../lib/gs/gs-react-grid";
+import { generateSearchLink } from "../reducers/data-reducers";
 
 // ================================= END IMPORT ===============================================
 // ================================= END IMPORT ===============================================
 // ================================= END IMPORT ===============================================
-let changeTimeout;
 
 const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite}) => {
     return (
@@ -58,12 +58,12 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite}
                         textAlign: "center"
                     }}>Try dropping one file here, or click to select a file to upload.</div>
                 </Dropzone>
-                <TextInput
+                <Input
                     placeHolder="Enter the site where you want to search (start with 'www')"
                     style={{
                         margin: "10px 0 5px 0"
                     }}
-                    value={targetSite ? targetSite : ""}
+                    defaultValue=""
                     onDOMChange={(event) => {
                         // if (changeTimeout) {
                         //     window.clearTimeout(changeTimeout);
@@ -74,7 +74,7 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite}
                         // }, 700);
                     } }
                     >
-                </TextInput>
+                </Input>
                 <Box
                     size="small"
                     >
@@ -130,7 +130,11 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite}
                     sortAscending={sortAscending}
                     style={{}}
                     onRowClick={(id) => {
-                        console.log(data[id].keyword);
+                        const link = document.createElement("a");
+                        link.setAttribute("href", generateSearchLink(targetSite, data[id].keyword));
+                        link.setAttribute("target", "_blank");
+                        link.setAttribute("rel", "noopener");
+                        link.click();
                     } }
                     >
                 </Grid>
@@ -147,7 +151,38 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite}
                     type="button"
                     primary={true}
                     onClick={() => {
-                        console.log("DO SEARCH");
+                        let i = 0;
+                        console.log("START SEARCHING...");
+                        const doSearch = (rowIndex) => {
+                            if (i < data.length) {
+                                const item = data[i];
+                                dispatch(createChangeRowStatusAction(rowIndex, IN_PROGRESS, 0, NOT_FOUND));
+                                $.ajax({
+                                    url: generateSearchLink(targetSite, item.keyword),
+                                    success: (text) => {
+                                        let conclusion;
+                                        if (text.indexOf("did not match any documents.") > -1) {
+                                            conclusion = NOT_FOUND;
+                                        } else {
+                                            conclusion = EXISTS;
+                                        }
+                                        dispatch(createChangeRowStatusAction(rowIndex, DONE, 0, conclusion));
+                                    },
+                                    error: () => {
+                                        dispatch(createChangeRowStatusAction(rowIndex, ERROR, 0, UNDEFINED));
+                                    }
+                                });
+                                i++;
+                            } else {
+                                console.log(i);
+                                window.clearInterval(searchInterval);
+                                console.log("STOP SEARCHING");
+                            }
+                        };
+                        doSearch(i); // initial run
+                        const searchInterval = window.setInterval(function () {
+                            doSearch(i);
+                        }, 300);
                     } }
                     >
                 </Button>
