@@ -1,8 +1,8 @@
 // external libraries
 import React from "react";
-import Box from "grommet/components/Box";
-import Button from "grommet/components/Button";
-import Input from "grommet/components/TextInput";
+// import Box from "grommet/components/Box";
+// import Button from "grommet/components/Button";
+// import Input from "grommet/components/TextInput";
 import Dropzone from "react-dropzone";
 // components
 
@@ -18,6 +18,16 @@ import { generateSearchLink } from "../reducers/data-reducers";
 // ================================= END IMPORT ===============================================
 // ================================= END IMPORT ===============================================
 let changeTimeout;
+const Box = ({children}) => {
+    return (
+        <div>{children}</div>
+    );
+};
+const Button = (props) => {
+    return (
+        <button {...props}></button>
+    );
+};
 const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite}) => {
     return (
         <Box
@@ -58,23 +68,23 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite}
                         textAlign: "center"
                     }}>Try dropping one file here, or click to select a file to upload.</div>
                 </Dropzone>
-                <Input
-                    placeHolder="Enter the site where you want to search (start with 'www')"
+                <input
+                    placeholder="Enter the site where you want to search (start with 'www')"
                     style={{
                         margin: "10px 0 5px 0"
                     }}
-                    defaultValue=""
-                    onDOMChange={(event) => {
-                        if (changeTimeout) {
-                            window.clearTimeout(changeTimeout); // clear old timeout
-                        }
+                    value={targetSite ? targetSite : ""}
+                    onChange={(event) => {
+                        // if (changeTimeout) {
+                        //     window.clearTimeout(changeTimeout); // clear old timeout
+                        // }
                         const value = event.target.value;
-                        changeTimeout = window.setTimeout(() => {
-                            dispatch(createChangeSiteAction(value));
-                        }, 700);
+                        // changeTimeout = window.setTimeout(() => {
+                        dispatch(createChangeSiteAction(value));
+                        // }, 700);
                     } }
                     >
-                </Input>
+                </input>
                 <Box
                     size="small"
                     >
@@ -130,11 +140,11 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite}
                     sortAscending={sortAscending}
                     style={{}}
                     onRowClick={(id) => {
-                        const link = document.createElement("a");
-                        link.setAttribute("href", generateSearchLink(targetSite, data[id].keyword));
-                        link.setAttribute("target", "_blank");
-                        link.setAttribute("rel", "noopener");
-                        link.click();
+                        // const link = document.createElement("a");
+                        // link.setAttribute("href", generateSearchLink(targetSite, data[id].keyword));
+                        // link.setAttribute("target", "_blank");
+                        // link.setAttribute("rel", "noopener");
+                        // link.click();
                     } }
                     >
                 </Grid>
@@ -157,21 +167,21 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite}
                             if (i < data.length) {
                                 const item = data[i];
                                 dispatch(createChangeRowStatusAction(rowIndex, IN_PROGRESS));
-                                $.ajax({
-                                    url: generateSearchLink(targetSite, item.keyword),
-                                    success: (text) => {
-                                        let conclusion;
-                                        if (text.indexOf("did not match any documents.") > -1) {
-                                            conclusion = NOT_FOUND;
-                                        } else {
-                                            conclusion = EXISTS;
-                                        }
-                                        dispatch(createChangeRowStatusAction(rowIndex, DONE, 0, conclusion));
-                                    },
-                                    error: () => {
-                                        dispatch(createChangeRowStatusAction(rowIndex, ERROR, 0, UNDEFINED));
-                                    }
-                                });
+                                // $.ajax({
+                                //     url: generateSearchLink(targetSite, item.keyword),
+                                //     success: (text) => {
+                                //         let conclusion;
+                                //         if (text.indexOf("did not match any documents.") > -1) {
+                                //             conclusion = NOT_FOUND;
+                                //         } else {
+                                //             conclusion = EXISTS;
+                                //         }
+                                //         dispatch(createChangeRowStatusAction(rowIndex, DONE, 0, conclusion));
+                                //     },
+                                //     error: () => {
+                                //         dispatch(createChangeRowStatusAction(rowIndex, ERROR, 0, UNDEFINED));
+                                //     }
+                                // });
                                 i++;
                             } else {
                                 console.log(i);

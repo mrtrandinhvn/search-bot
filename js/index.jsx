@@ -1,6 +1,6 @@
 // stylesheets
 import "../css/index";
-import "grommet/scss/vanilla/index";
+// import "grommet/scss/vanilla/index";
 
 // external libraries
 import React from "react";
@@ -66,5 +66,5 @@ const AppWrapper = () => {
 };
 render(
     <Provider store={createStore(mainReducer)}>
-        <AppWrapper></AppWrapper>
+        <MainAppContainer columns={columns}></MainAppContainer>
     </Provider>, document.getElementById("app-root"));

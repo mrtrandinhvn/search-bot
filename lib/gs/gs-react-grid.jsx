@@ -1,12 +1,22 @@
 import TableHeader from "grommet/components/TableHeader";
-import Table from "grommet/components/Table";
-import TableRow from "grommet/components/TableRow";
+// import Table from "grommet/components/Table";
+// import TableRow from "grommet/components/TableRow";
 import React from "react";
 import "./gs-react-grid.css";
 import { ERROR, DONE, IN_PROGRESS, EXISTS, NOT_FOUND } from "../../js/actions/data-action";
 const cellType = {
     link: "LINK",
     text: "TEXT"
+};
+const Table = (props) => {
+    return (
+        <table {...props}>{props.children}</table>
+    );
+};
+const TableRow = (props) => {
+    return (
+        <tr {...props}>{props.children}</tr>
+    );
 };
 const Cell = ({type, value}) => {
     return (
@@ -87,16 +97,19 @@ const GsGrid = ({columns, data, sortIndex, sortAscending, onRowClick}) => {
         <Table selectable={true}
             scrollable={false}
             className="gs-react-grid">
-            <TableHeader
-                labels={
-                    columns.map((col) => {
-                        return col.label;
-                    })
-                }
-                sortIndex={sortIndex}
-                sortAscending={sortAscending}
-                >
-            </TableHeader>
+
+            {
+                //     <TableHeader
+                //                 labels={
+                //                     columns.map((col) => {
+                //                         return col.label;
+                //                     })
+                //                 }
+                //                 sortIndex={sortIndex}
+                //                 sortAscending={sortAscending}
+                //                 >
+                // </TableHeader>
+            }
             <tbody>
                 {
                     data.map((item, index) => {
