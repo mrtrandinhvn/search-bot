@@ -17,7 +17,7 @@ import { generateSearchLink } from "../reducers/data-reducers";
 // ================================= END IMPORT ===============================================
 // ================================= END IMPORT ===============================================
 // ================================= END IMPORT ===============================================
-
+let changeTimeout;
 const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite}) => {
     return (
         <Box
@@ -65,13 +65,13 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite}
                     }}
                     defaultValue=""
                     onDOMChange={(event) => {
-                        // if (changeTimeout) {
-                        //     window.clearTimeout(changeTimeout);
-                        // }
+                        if (changeTimeout) {
+                            window.clearTimeout(changeTimeout); // clear old timeout
+                        }
                         const value = event.target.value;
-                        // changeTimeout = window.setTimeout(() => {
-                        dispatch(createChangeSiteAction(value));
-                        // }, 700);
+                        changeTimeout = window.setTimeout(() => {
+                            dispatch(createChangeSiteAction(value));
+                        }, 700);
                     } }
                     >
                 </Input>
@@ -156,7 +156,7 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite}
                         const doSearch = (rowIndex) => {
                             if (i < data.length) {
                                 const item = data[i];
-                                dispatch(createChangeRowStatusAction(rowIndex, IN_PROGRESS, 0, NOT_FOUND));
+                                dispatch(createChangeRowStatusAction(rowIndex, IN_PROGRESS));
                                 $.ajax({
                                     url: generateSearchLink(targetSite, item.keyword),
                                     success: (text) => {
