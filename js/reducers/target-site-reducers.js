@@ -1,4 +1,4 @@
-import { CHANGE_SITE } from "../actions/target-site-action";
+import { CHANGE_SITE } from "../actions/target-site-actions";
 
 export const targetSiteReducer = (state = "", action = { type: null, newUrl: null }) => {
     switch (action.type) {

@@ -43,7 +43,8 @@ const MainAppContainer = connect(
             data: state.data,
             targetSite: state.targetSite,
             sortIndex: state.sortIndex,
-            sortAscending: state.sortAscending
+            sortAscending: state.sortAscending,
+            mode: state.mode
         };
     }
 )(MainApp);

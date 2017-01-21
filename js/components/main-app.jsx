@@ -3,22 +3,27 @@ import React from "react";
 import Box from "grommet/components/Box";
 import Button from "grommet/components/Button";
 import Input from "grommet/components/TextInput";
+import RadioButton from "grommet/components/RadioButton";
+import FormField from "grommet/components/FormField";
+import Form from "grommet/components/Form";
 import Dropzone from "react-dropzone";
 // components
-
-import { createChangeSiteAction } from "../actions/target-site-action";
-import { createImportDataAction, createChangeRowStatusAction, UNDEFINED, IN_PROGRESS, DONE, ERROR, NOT_FOUND, EXISTS } from "../actions/data-action";
+import { createChangeSearchModeAction, ALLINTEXT, ALLINTITLE } from "../actions/search-mode-actions";
+import { createChangeSiteAction } from "../actions/target-site-actions";
+import { createImportDataAction, createChangeRowStatusAction, UNDEFINED, IN_PROGRESS, DONE, ERROR, NOT_FOUND, EXISTS } from "../actions/data-actions";
 
 // internal libraries
 import $ from "../../lib/gs/gs-common";
 import Grid from "../../lib/gs/gs-react-grid";
-import { generateSearchLink } from "../reducers/data-reducers";
+import { generateAjaxSearchLink, generateExportSearchLink } from "../reducers/data-reducers";
 
 // ================================= END IMPORT ===============================================
 // ================================= END IMPORT ===============================================
 // ================================= END IMPORT ===============================================
 let changeTimeout;
-const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite}) => {
+const searchTimeInterval = 300; // ms
+const siteChangeTimeout = 700; // ms
+const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite, mode}) => {
     return (
         <Box
             align="center"
@@ -49,7 +54,11 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite}
                     onDrop={(files) => {
                         var reader = new FileReader();
                         reader.onload = function () {
-                            dispatch(createImportDataAction(reader.result.split("\r\n")));
+                            const keywords = [];
+                            reader.result.split("\r\n").map((row) => {
+                                keywords.push(row.split(",")[0]); // get the first column of each row
+                            });
+                            dispatch(createImportDataAction(keywords));
                         };
                         reader.readAsText(files[0]);
                     } }
@@ -58,23 +67,59 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite}
                         textAlign: "center"
                     }}>Try dropping one file here, or click to select a file to upload.</div>
                 </Dropzone>
-                <Input
-                    placeHolder="Enter the site where you want to search (start with 'www')"
-                    style={{
-                        margin: "10px 0 5px 0"
+                <Box
+                    align="center"
+                    size={{
+                        width: "xxlarge"
                     }}
-                    defaultValue=""
-                    onDOMChange={(event) => {
-                        if (changeTimeout) {
-                            window.clearTimeout(changeTimeout); // clear old timeout
-                        }
-                        const value = event.target.value;
-                        changeTimeout = window.setTimeout(() => {
-                            dispatch(createChangeSiteAction(value));
-                        }, 700);
-                    } }
                     >
-                </Input>
+                    <Form
+                        style={{
+                            width: "100%"
+                        }}
+                        >
+                        <FormField
+                            label="Search Site"
+                            >
+                            <Input
+                                placeHolder="Start with 'www'"
+                                defaultValue=""
+                                style={
+                                    {
+                                    }
+                                }
+                                onDOMChange={(event) => {
+                                    if (changeTimeout) {
+                                        window.clearTimeout(changeTimeout); // clear old timeout
+                                    }
+                                    const value = event.target.value;
+                                    changeTimeout = window.setTimeout(() => {
+                                        dispatch(createChangeSiteAction(value));
+                                    }, siteChangeTimeout);
+                                } }
+                                >
+                            </Input>
+                        </FormField>
+                        <FormField
+                            label="Search Mode"
+                            >
+                            <RadioButton
+                                id="mode-allintitle"
+                                label="More conversion - allintitle"
+                                checked={mode === ALLINTITLE}
+                                onChange={() => {
+                                    dispatch(createChangeSearchModeAction(ALLINTITLE));
+                                } } />
+                            <RadioButton
+                                id="mode-allintext"
+                                label="High Traffic - allintext"
+                                checked={mode === ALLINTEXT}
+                                onChange={() => {
+                                    dispatch(createChangeSearchModeAction(ALLINTEXT));
+                                } } />
+                        </FormField>
+                    </Form>
+                </Box>
                 <Box
                     size="small"
                     >
@@ -84,13 +129,14 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite}
                         onClick={() => {
                             const items = data;
                             // exporting file
-                            let csvContent = "data:text/csv;charset=utf-8,No,Keyword,Status,Conclusion\r\n";
+                            let csvContent = "data:text/csv;charset=utf-8,No,Keyword,Status,Conclusion,Search Link\r\n";
                             items.map((item) => {
                                 let row = "";
                                 ["number", "keyword", "status", "conclusion"].map((field) => {
                                     row += item[field] + ",";
                                 });
-                                csvContent += row.substr(0, row.length - 1);// remove the last , character
+                                row += generateExportSearchLink(item.targetSite, item.keyword, mode);
+                                csvContent += row;
                                 csvContent += "\r\n";
                             });
                             const encodedUri = encodeURI(csvContent);
@@ -105,7 +151,19 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite}
                     </Button>
                 </Box>
             </Box>
-            <div>{data.length} keyword(s)</div>
+            {
+                (() => {
+                    const total = data.length;
+                    const searched = data.filter((item) => item.status === DONE || item.status === ERROR).length;
+                    return (
+                        <div>
+                            <div> {searched}/{total} keyword(s)</div>
+                            <div> {(searched * 100 / total).toFixed(2)}%</div>
+                            <div> Time requires:  ~{(total * searchTimeInterval * 1.5 / 1000).toFixed()} seconds(s)</div>
+                        </div>
+                    );
+                })()
+            }
             <Box
                 align="center"
                 margin="small"
@@ -131,7 +189,7 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite}
                     style={{}}
                     onRowClick={(id) => {
                         const link = document.createElement("a");
-                        link.setAttribute("href", generateSearchLink(targetSite, data[id].keyword));
+                        link.setAttribute("href", generateExportSearchLink(targetSite, data[id].keyword, mode));
                         link.setAttribute("target", "_blank");
                         link.setAttribute("rel", "noopener");
                         link.click();
@@ -152,13 +210,12 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite}
                     primary={true}
                     onClick={() => {
                         let i = 0;
-                        console.log("START SEARCHING...");
                         const doSearch = (rowIndex) => {
                             if (i < data.length) {
                                 const item = data[i];
                                 dispatch(createChangeRowStatusAction(rowIndex, IN_PROGRESS));
                                 $.ajax({
-                                    url: generateSearchLink(targetSite, item.keyword),
+                                    url: generateAjaxSearchLink(targetSite, item.keyword, mode),
                                     success: (text) => {
                                         let conclusion;
                                         if (text.indexOf("did not match any documents.") > -1) {
@@ -166,7 +223,10 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite}
                                         } else {
                                             conclusion = EXISTS;
                                         }
+                                        // window.setTimeout(
+                                        //     () => {
                                         dispatch(createChangeRowStatusAction(rowIndex, DONE, 0, conclusion));
+                                        // }, 1000);
                                     },
                                     error: () => {
                                         dispatch(createChangeRowStatusAction(rowIndex, ERROR, 0, UNDEFINED));
@@ -174,20 +234,18 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite}
                                 });
                                 i++;
                             } else {
-                                console.log(i);
                                 window.clearInterval(searchInterval);
-                                console.log("STOP SEARCHING");
                             }
                         };
                         doSearch(i); // initial run
                         const searchInterval = window.setInterval(function () {
                             doSearch(i);
-                        }, 300);
+                        }, searchTimeInterval);
                     } }
                     >
                 </Button>
             </Box>
-        </Box>
+        </Box >
     );
 };
 MainApp.propTypes = {
@@ -196,6 +254,7 @@ MainApp.propTypes = {
     sortAscending: React.PropTypes.bool.isRequired,
     data: React.PropTypes.array.isRequired,
     dispatch: React.PropTypes.func.isRequired,
-    targetSite: React.PropTypes.string
+    targetSite: React.PropTypes.string,
+    mode: React.PropTypes.string.isRequired
 };
 export default MainApp;

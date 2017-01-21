@@ -3,7 +3,7 @@ import Table from "grommet/components/Table";
 import TableRow from "grommet/components/TableRow";
 import React from "react";
 import "./gs-react-grid.css";
-import { ERROR, DONE, IN_PROGRESS, EXISTS, NOT_FOUND } from "../../js/actions/data-action";
+import { ERROR, DONE, IN_PROGRESS, EXISTS, NOT_FOUND } from "../../js/actions/data-actions";
 const cellType = {
     link: "LINK",
     text: "TEXT"
