@@ -24,6 +24,9 @@ let changeTimeout;
 const searchTimeInterval = 300; // ms
 const siteChangeTimeout = 700; // ms
 const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite, mode}) => {
+    const total = data.length;
+    const searched = data.filter((item) => item.status === DONE || item.status === ERROR).length;
+    const searchedPercent = (searched * 100 / total).toFixed(2);
     return (
         <Box
             align="center"
@@ -120,82 +123,6 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite,
                         </FormField>
                     </Form>
                 </Box>
-                <Box
-                    size="small"
-                    >
-                    <Button label="Export to CSV"
-                        type="button"
-                        primary={false}
-                        onClick={() => {
-                            const items = data;
-                            // exporting file
-                            let csvContent = "data:text/csv;charset=utf-8,No,Keyword,Status,Conclusion,Search Link\r\n";
-                            items.map((item) => {
-                                let row = "";
-                                ["number", "keyword", "status", "conclusion"].map((field) => {
-                                    row += item[field] + ",";
-                                });
-                                row += generateExportSearchLink(item.targetSite, item.keyword, mode);
-                                csvContent += row;
-                                csvContent += "\r\n";
-                            });
-                            const encodedUri = encodeURI(csvContent);
-                            const link = document.createElement("a");
-                            link.setAttribute("href", encodedUri);
-                            link.setAttribute("target", "_blank");
-                            link.setAttribute("rel", "noopener");
-                            link.setAttribute("download", "Search on " + targetSite + ".csv");
-                            link.click();
-                        } }
-                        >
-                    </Button>
-                </Box>
-            </Box>
-            {
-                (() => {
-                    const total = data.length;
-                    const searched = data.filter((item) => item.status === DONE || item.status === ERROR).length;
-                    return (
-                        <div>
-                            <div> {searched}/{total} keyword(s)</div>
-                            <div> {(searched * 100 / total).toFixed(2)}%</div>
-                            <div> Time requires:  ~{(total * searchTimeInterval * 1.5 / 1000).toFixed()} seconds(s)</div>
-                        </div>
-                    );
-                })()
-            }
-            <Box
-                align="center"
-                margin="small"
-                pad="small"
-                size={
-                    {
-                        height: "medium",
-                        width: "xxlarge"
-                    }
-                }
-                colorIndex="light-1"
-                style={
-                    {
-                        overflowY: "auto"
-                    }
-                }
-                >
-                <Grid
-                    data={data}
-                    columns={columns}
-                    sortIndex={sortIndex}
-                    sortAscending={sortAscending}
-                    style={{}}
-                    onRowClick={(id) => {
-                        const link = document.createElement("a");
-                        link.setAttribute("href", generateExportSearchLink(targetSite, data[id].keyword, mode));
-                        link.setAttribute("target", "_blank");
-                        link.setAttribute("rel", "noopener");
-                        link.click();
-                    } }
-                    >
-                </Grid>
             </Box>
             <Box
                 align="center"
@@ -244,6 +171,85 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite,
                     } }
                     >
                 </Button>
+            </Box>
+            <div style={{
+                width: "960px",
+                border: "1px solid #ddd"
+            }}>
+                <span style={{
+                    color: "#fff",
+                    display: "inline-block",
+                    width: isNaN(searchedPercent) ? 0 : searchedPercent + "%",
+                    textAlign: "center",
+                    backgroundColor: "#865cd6"
+                }}>{isNaN(searchedPercent) ? "0" : searchedPercent}%</span>
+            </div>
+            <Box
+                size="small"
+                margin="small"
+                >
+                <Button label="Export to CSV"
+                    type="button"
+                    primary={false}
+                    style={{
+                        display: searched === total && total > 0 ? "block" : "none"
+                    }}
+                    onClick={() => {
+                        const items = data;
+                        // exporting file
+                        let csvContent = "data:text/csv;charset=utf-8,No,Keyword,Status,Conclusion\r\n";
+                        items.map((item) => {
+                            let row = "";
+                            ["number", "keyword", "status", "conclusion"].map((field) => {
+                                row += item[field] + ",";
+                            });
+                            // row += generateExportSearchLink(item.targetSite, item.keyword, mode);
+                            csvContent += row.substr(0, row.length - 1);// remove the last ',' character
+                            csvContent += "\r\n";
+                        });
+                        const encodedUri = encodeURI(csvContent);
+                        const link = document.createElement("a");
+                        link.setAttribute("href", encodedUri);
+                        link.setAttribute("target", "_blank");
+                        link.setAttribute("rel", "noopener");
+                        link.setAttribute("download", "Search on " + targetSite + ".csv");
+                        link.click();
+                    } }
+                    >
+                </Button>
+            </Box>
+            <Box
+                align="center"
+                margin="small"
+                pad="small"
+                size={
+                    {
+                        height: "medium",
+                        width: "xxlarge"
+                    }
+                }
+                colorIndex="light-1"
+                style={
+                    {
+                        overflowY: "auto"
+                    }
+                }
+                >
+                <Grid
+                    data={data}
+                    columns={columns}
+                    sortIndex={sortIndex}
+                    sortAscending={sortAscending}
+                    style={{}}
+                    onRowClick={(id) => {
+                        // const link = document.createElement("a");
+                        // link.setAttribute("href", generateExportSearchLink(targetSite, data[id].keyword, mode));
+                        // link.setAttribute("target", "_blank");
+                        // link.setAttribute("rel", "noopener");
+                        // link.click();
+                    } }
+                    >
+                </Grid>
             </Box>
         </Box >
     );
