@@ -65,17 +65,7 @@ const AppWrapper = () => {
         </Article >
     );
 };
-const today = new Date();
-const day = today.getDate();
-const month = today.getMonth() + 1;
-if (month > 1) {
-    document.write("Please contact me through email: mrtrandinhvn@gmail.com for the full version");
-} else if (month === 1 && day > 25) {
-    document.write("Please contact me through email: mrtrandinhvn@gmail.com for the full version");
-}
-else {
-    render(
-        <Provider store={createStore(mainReducer)}>
-            <AppWrapper></AppWrapper>
-        </Provider>, document.getElementById("app-root"));
-}
+render(
+    <Provider store={createStore(mainReducer)}>
+        <AppWrapper></AppWrapper>
+    </Provider>, document.getElementById("app-root"));

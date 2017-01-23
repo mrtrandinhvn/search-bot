@@ -108,14 +108,14 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite,
                             >
                             <RadioButton
                                 id="mode-allintitle"
-                                label="More conversion - allintitle"
+                                label="More conversions"
                                 checked={mode === ALLINTITLE}
                                 onChange={() => {
                                     dispatch(createChangeSearchModeAction(ALLINTITLE));
                                 } } />
                             <RadioButton
                                 id="mode-allintext"
-                                label="High Traffic - allintext"
+                                label="High Traffic"
                                 checked={mode === ALLINTEXT}
                                 onChange={() => {
                                     dispatch(createChangeSearchModeAction(ALLINTEXT));
