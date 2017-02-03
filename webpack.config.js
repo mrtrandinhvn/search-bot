@@ -11,33 +11,76 @@ module.exports = {
         filename: "[name].bundle.js".toLowerCase()
     },
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.jsx$|\.js$/,
                 exclude: /(node_modules|bower_components)/,
-                loader: "babel",
-                query: {
+                loader: "babel-loader",
+                options: {
                     presets: ["es2015", "react"],
                     plugins: ["transform-object-rest-spread"]
                 }
             },
             {
                 test: /\.css$/,
-                loader: "style-loader!css-loader?minimize!postcss-loader"
+                exclude: /node_modules/,
+                use: [
+                    "style-loader",
+                    {
+                        loader: "css-loader",
+                        options: {
+                            minimize: true
+                        }
+                    },
+                    {
+                        loader: "postcss-loader",
+                        options: {
+                            postcss: [
+                                autoprefixer({ browsers: ["last 2 versions"] })
+                            ]
+                        }
+                    },
+                ]
             },
             {
                 test: /\.scss$/,
-                loader: "style!css?minimize!postcss!sass?outputStyle=compressed",
+                use: [
+                    "style-loader",
+                    {
+                        loader: "css-loader",
+                        options: {
+                            minimize: true
+                        }
+                    },
+                    {
+                        loader: "postcss-loader",
+                        options: {
+                            postcss: [
+                                autoprefixer({ browsers: ["last 2 versions"] })
+                            ]
+                        }
+                    },
+                    {
+                        loader: "sass-loader",
+                        options: {
+                            includePaths: [
+                                path.resolve(__dirname, "./node_modules")
+                            ],
+                            outputStyle: "compressed"
+                        }
+                    }
+                ],
+
             }
         ]
     },
-    sassLoader: {
-        includePaths: [
-            "./node_modules"
-        ]
-    },
-    postcss: [autoprefixer({ browsers: ["last 2 versions"] })],
     plugins: [
+        new webpack.LoaderOptionsPlugin({
+            options: {
+                // context: __dirname
+            },
+            minimize: false
+        }),
         // new webpack.ProvidePlugin({
         //     $: "jquery",
         //     jQuery: "jquery"
@@ -45,15 +88,13 @@ module.exports = {
         new webpack.DefinePlugin({
             "process.env.NODE_ENV": JSON.stringify("production")
         }),
-        // new webpack.optimize.UglifyJsPlugin({
-        //     compress: {
-        //         warnings: false
-        //     }
-        // })
+        new webpack.optimize.UglifyJsPlugin({
+            sourceMap: true
+        })
     ],
     resolve: {
-        extensions: ["", ".js", ".jsx", ".css", ".scss"],
-        root: []
+        extensions: [".js", ".jsx", ".css", ".scss"],
+        modules: []
     },
     externals: {}
 };

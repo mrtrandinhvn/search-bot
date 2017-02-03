@@ -35,7 +35,7 @@
     "postcss-loader": "latest",
     "sass-loader": "latest",
     "style-loader": "latest",
-    "uglify-js": "^2.7.5",
+    "uglify-js": "latest",
     "webpack": "latest"
   }
 }
