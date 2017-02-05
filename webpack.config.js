@@ -1,5 +1,4 @@
 ﻿var path = require("path");
-var webpack = require("webpack");
 var autoprefixer = require("autoprefixer");
 module.exports = {
     context: path.join(__dirname),
@@ -35,7 +34,7 @@ module.exports = {
                     {
                         loader: "postcss-loader",
                         options: {
-                            postcss: [
+                            plugins: [
                                 autoprefixer({ browsers: ["last 2 versions"] })
                             ]
                         }
@@ -55,7 +54,7 @@ module.exports = {
                     {
                         loader: "postcss-loader",
                         options: {
-                            postcss: [
+                            plugins: [
                                 autoprefixer({ browsers: ["last 2 versions"] })
                             ]
                         }
@@ -75,26 +74,16 @@ module.exports = {
         ]
     },
     plugins: [
-        new webpack.LoaderOptionsPlugin({
-            options: {
-                // context: __dirname
-            },
-            minimize: false
-        }),
         // new webpack.ProvidePlugin({
         //     $: "jquery",
         //     jQuery: "jquery"
         // }),
-        new webpack.DefinePlugin({
-            "process.env.NODE_ENV": JSON.stringify("production")
-        }),
-        new webpack.optimize.UglifyJsPlugin({
-            sourceMap: true
-        })
     ],
     resolve: {
         extensions: [".js", ".jsx", ".css", ".scss"],
-        modules: []
+        modules: [
+            "node_modules"
+        ]
     },
     externals: {}
 };
