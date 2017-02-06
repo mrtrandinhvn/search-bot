@@ -8,14 +8,14 @@ import FormField from "grommet/components/FormField";
 import Form from "grommet/components/Form";
 import Dropzone from "react-dropzone";
 // components
-import { createChangeSearchModeAction, ALLINTEXT, ALLINTITLE } from "../actions/search-mode-actions";
+import { createChangeSearchModeAction, IN_TITLE, IN_TEXT, IN_URL, WILDCARD } from "../actions/search-mode-actions";
 import { createChangeSiteAction } from "../actions/target-site-actions";
 import { createImportDataAction, createChangeRowStatusAction, UNDEFINED, IN_PROGRESS, DONE, ERROR, NOT_FOUND, EXISTS } from "../actions/data-actions";
 
 // internal libraries
 import $ from "../../lib/gs/gs-common";
 import Grid from "../../lib/gs/gs-react-grid";
-import { generateAjaxSearchLink, generateExportSearchLink } from "../reducers/data-reducers";
+import { generateAjaxSearchLink } from "../reducers/data-reducers";
 
 // ================================= END IMPORT ===============================================
 // ================================= END IMPORT ===============================================
@@ -31,7 +31,7 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite,
         <Box
             align="center"
             full={true}
-            >
+        >
             <Box
                 margin="small"
                 colorIndex="light-1"
@@ -40,7 +40,7 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite,
                         width: "xxlarge"
                     }
                 }
-                >
+            >
                 <Dropzone
                     multiple={false}
                     style={{
@@ -64,8 +64,8 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite,
                             dispatch(createImportDataAction(keywords));
                         };
                         reader.readAsText(files[0]);
-                    } }
-                    >
+                    }}
+                >
                     <div style={{
                         textAlign: "center"
                     }}>Try dropping one file here, or click to select a file to upload.</div>
@@ -75,22 +75,21 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite,
                     size={{
                         width: "xxlarge"
                     }}
-                    >
+                >
                     <Form
                         style={{
                             width: "100%"
                         }}
-                        >
+                    >
                         <FormField
                             label="Search Site"
-                            >
+                            style={{
+                                width: "100%"
+                            }}
+                        >
                             <Input
                                 placeHolder="Start with 'www'"
                                 defaultValue=""
-                                style={
-                                    {
-                                    }
-                                }
                                 onDOMChange={(event) => {
                                     if (changeTimeout) {
                                         window.clearTimeout(changeTimeout); // clear old timeout
@@ -99,27 +98,42 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite,
                                     changeTimeout = window.setTimeout(() => {
                                         dispatch(createChangeSiteAction(value));
                                     }, siteChangeTimeout);
-                                } }
-                                >
+                                }}
+                            >
                             </Input>
                         </FormField>
                         <FormField
                             label="Search Mode"
-                            >
+                            style={{ width: "100%" }}
+                        >
                             <RadioButton
-                                id="mode-allintitle"
-                                label="More conversions"
-                                checked={mode === ALLINTITLE}
-                                onChange={() => {
-                                    dispatch(createChangeSearchModeAction(ALLINTITLE));
-                                } } />
-                            <RadioButton
-                                id="mode-allintext"
+                                id="mode-intext"
                                 label="High Traffic"
-                                checked={mode === ALLINTEXT}
+                                checked={mode === IN_TEXT}
                                 onChange={() => {
-                                    dispatch(createChangeSearchModeAction(ALLINTEXT));
-                                } } />
+                                    dispatch(createChangeSearchModeAction(IN_TEXT));
+                                }} ></RadioButton>
+                            <RadioButton
+                                id="mode-intitle"
+                                label="High conversions"
+                                checked={mode === IN_TITLE}
+                                onChange={() => {
+                                    dispatch(createChangeSearchModeAction(IN_TITLE));
+                                }} ></RadioButton>
+                            <RadioButton
+                                id="mode-wildcard"
+                                label="Wildcard"
+                                checked={mode === WILDCARD}
+                                onChange={() => {
+                                    dispatch(createChangeSearchModeAction(WILDCARD));
+                                }} ></RadioButton>
+                            <RadioButton
+                                id="mode-inurl"
+                                label="Products being sold"
+                                checked={mode === IN_URL}
+                                onChange={() => {
+                                    dispatch(createChangeSearchModeAction(IN_URL));
+                                }} ></RadioButton>
                         </FormField>
                     </Form>
                 </Box>
@@ -145,15 +159,17 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite,
                                     url: generateAjaxSearchLink(targetSite, item.keyword, mode),
                                     success: (text) => {
                                         let conclusion;
-                                        if (text.indexOf("did not match any documents.") > -1) {
+                                        if (text.indexOf("No results found for") > -1 || text.indexOf("did not match any documents.") > -1) {
                                             conclusion = NOT_FOUND;
                                         } else {
                                             conclusion = EXISTS;
                                         }
-                                        // window.setTimeout(
-                                        //     () => {
+                                        //let conclusion = EXISTS;
+                                        //console.log(generateAjaxSearchLink(targetSite, item.keyword, mode));
+                                        //window.setTimeout(
+                                        //() => {
                                         dispatch(createChangeRowStatusAction(rowIndex, DONE, 0, conclusion));
-                                        // }, 1000);
+                                        //}, 1000);
                                     },
                                     error: () => {
                                         dispatch(createChangeRowStatusAction(rowIndex, ERROR, 0, UNDEFINED));
@@ -168,8 +184,8 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite,
                         const searchInterval = window.setInterval(function () {
                             doSearch(i);
                         }, searchTimeInterval);
-                    } }
-                    >
+                    }}
+                >
                 </Button>
             </Box>
             <div style={{
@@ -187,7 +203,7 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite,
             <Box
                 size="small"
                 margin="small"
-                >
+            >
                 <Button label="Export to CSV"
                     type="button"
                     primary={false}
@@ -214,8 +230,8 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite,
                         link.setAttribute("rel", "noopener");
                         link.setAttribute("download", "Search on " + targetSite + ".csv");
                         link.click();
-                    } }
-                    >
+                    }}
+                >
                 </Button>
             </Box>
             <Box
@@ -234,21 +250,13 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite,
                         overflowY: "auto"
                     }
                 }
-                >
+            >
                 <Grid
                     data={data}
                     columns={columns}
                     sortIndex={sortIndex}
                     sortAscending={sortAscending}
-                    style={{}}
-                    onRowClick={(id) => {
-                        // const link = document.createElement("a");
-                        // link.setAttribute("href", generateExportSearchLink(targetSite, data[id].keyword, mode));
-                        // link.setAttribute("target", "_blank");
-                        // link.setAttribute("rel", "noopener");
-                        // link.click();
-                    } }
-                    >
+                >
                 </Grid>
             </Box>
         </Box >

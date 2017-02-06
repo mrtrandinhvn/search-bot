@@ -59,10 +59,7 @@ Cell.propTypes = {
 const Row = ({fields, data, onClick}) => {
     return (
         <TableRow
-            onClick={() => {
-                onClick(data.id);
-            } }
-            >
+        >
             {
                 fields.map((field, index) => {
                     switch (field) {
@@ -95,7 +92,7 @@ const GsGrid = ({columns, data, sortIndex, sortAscending, onRowClick}) => {
                 }
                 sortIndex={sortIndex}
                 sortAscending={sortAscending}
-                >
+            >
             </TableHeader>
             <tbody>
                 {
@@ -110,8 +107,7 @@ const GsGrid = ({columns, data, sortIndex, sortAscending, onRowClick}) => {
                                         }
                                     )
                                 }
-                                onClick={onRowClick}
-                                >
+                            >
                             </Row>
                         );
                     })

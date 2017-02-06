@@ -51,13 +51,14 @@ const MainAppContainer = connect(
 const AppWrapper = () => {
     return (
         <Article>
-            <Box align="center"
+            <Box
+                align="center"
                 colorIndex="light-2">
                 <MyHeader></MyHeader>
                 <Section>
                     <MainAppContainer
                         columns={columns}
-                        >
+                    >
                     </MainAppContainer>
                 </Section>
                 <MyFooter></MyFooter>
