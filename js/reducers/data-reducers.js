@@ -5,11 +5,11 @@ export const generateAjaxSearchLink = (url = "", keyword = "", mode = "") => {
     switch (mode) {
         case IN_TEXT:
         case IN_TITLE:
-            return "https://www.google.co.uk/search?sclient=psy-ab&biw=1136&bih=950&tbs=qdr:y&q=" + mode + ":+\"" + window.encodeURI(keyword) + "\"+-comment+-comments+-rating+-ratings+-review+-reviews+site:http:%2F%2F" + window.encodeURI(url) + "&gs_l=serp.3...36084.36084.4.41864.1.1.0.0.0.0.135.135.0j1.1.0....0...1c.1.64.psy-ab..0.0.0.9NVFzIaVhEU&pbx=1&bav=on.2,or.&bvm=bv.144224172,d.dGc&fp=68e1e7926b6eb876&dpr=1&tch=1&ech=1&psi=sGWAWP_bDseC8wXz26m4DQ.1484809649063.5";
+            return "https://www.google.com.vn/search?sclient=psy-ab&site=&source=hp&q=" + mode + ":%22" + window.encodeURI(keyword) + "%22+-comment+-comments+-review+-reviews+-rating+-ratings+site:" + window.encodeURI(url) + "&oq=&gs_l=hp.3...280706.280706.0.283440.1.1.0.0.0.0.317.317.3-1.1.0....0...1c.1.64.psy-ab..0.0.0.cZQaGCGnaPk&pbx=1&bav=on.2,or.&bvm=bv.146094739,d.dGo&fp=1&biw=1185&bih=950&dpr=1&tch=1&ech=1&psi=_l6ZWOmAG4eg0gSOpYCgDg.1486446334974.3";
         case WILDCARD:
-            return "https://www.google.co.uk/search?sclient=psy-ab&biw=1136&bih=950&tbs=qdr:y&q=\"" + window.encodeURI(keyword) + "\"+-comment+-comments+-rating+-ratings+-review+-reviews+site:http:%2F%2F" + window.encodeURI(url) + "&gs_l=serp.3...36084.36084.4.41864.1.1.0.0.0.0.135.135.0j1.1.0....0...1c.1.64.psy-ab..0.0.0.9NVFzIaVhEU&pbx=1&bav=on.2,or.&bvm=bv.144224172,d.dGc&fp=68e1e7926b6eb876&dpr=1&tch=1&ech=1&psi=sGWAWP_bDseC8wXz26m4DQ.1484809649063.5";
+            return "https://www.google.com.vn/search?sclient=psy-ab&biw=1185&bih=950&q=%22" + window.encodeURI(keyword) + "%22+-comment+-comments+-rating+-ratings+-review+-reviews+site:" + window.encodeURI(url) + "&oq=&gs_l=serp.3...121265.148298.0.149322.37.36.1.0.0.0.360.2563.33j2j0j1.36.0....0...1c.1.64.psy-ab..1.0.0.MngPc2EBZ7E&pbx=1&bav=on.2,or.&bvm=bv.146094739,d.dGo&fp=594a44a2cd1af981&dpr=1&tch=1&ech=1&psi=C2GZWM-ZAoL10gSfuKhA.1486446859471.5";
         case IN_URL:
-            return "https://www.google.co.uk/search?sclient=psy-ab&biw=1136&bih=950&tbs=qdr:y&q=" + mode + ":+\"" + window.encodeURI(keyword) + "\"+site:http:%2F%2F" + window.encodeURI(url) + "&gs_l=serp.3...36084.36084.4.41864.1.1.0.0.0.0.135.135.0j1.1.0....0...1c.1.64.psy-ab..0.0.0.9NVFzIaVhEU&pbx=1&bav=on.2,or.&bvm=bv.144224172,d.dGc&fp=68e1e7926b6eb876&dpr=1&tch=1&ech=1&psi=sGWAWP_bDseC8wXz26m4DQ.1484809649063.5";
+            return "https://www.google.com.vn/complete/search?sclient=psy-ab&biw=1185&bih=950&q=" + mode + "%3A%22" + window.encodeURI(keyword) + "%22%20site%3A" + window.encodeURI(url) + "&oq=&gs_l=&pbx=1&bav=on.2,or.&bvm=bv.146094739,d.dGo&fp=594a44a2cd1af981&pf=p&gs_rn=64&gs_ri=psy-ab&pq=a&cp=36&gs_id=b6&xhr=t&tch=1&ech=2&psi=C2GZWM-ZAoL10gSfuKhA.1486446859471.11";
     }
 };
 export const generateExportSearchLink = (url = "", keyword = "", mode = "") => {
