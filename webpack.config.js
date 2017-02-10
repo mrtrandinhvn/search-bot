@@ -7,7 +7,8 @@ module.exports = {
     },
     output: {
         path: path.join(__dirname + "/js/built/"),
-        filename: "[name].bundle.js".toLowerCase()
+        filename: "[name].bundle.js".toLowerCase(),
+        publicPath: "/js/built/"
     },
     module: {
         rules: [

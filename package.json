@@ -7,7 +7,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "dev": "webpack --watch --progress",
+    "dev": "webpack-dev-server --progress",
     "build": "webpack -p --progress"
   },
   "author": "mrtrandinhvn@gmail.com",
@@ -18,7 +18,8 @@
     "react-dom": "latest",
     "react-dropzone": "latest",
     "react-redux": "latest",
-    "redux": "latest"
+    "redux": "latest",
+    "webpack-dev-server": "latest"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",
