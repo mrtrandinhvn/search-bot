@@ -5,6 +5,7 @@ import Button from "grommet/components/Button";
 import Input from "grommet/components/TextInput";
 import RadioButton from "grommet/components/RadioButton";
 import FormField from "grommet/components/FormField";
+import Columns from "grommet/components/Columns";
 import Form from "grommet/components/Form";
 import Dropzone from "react-dropzone";
 // components
@@ -23,7 +24,7 @@ import { generateAjaxSearchLink } from "../reducers/data-reducers";
 let changeTimeout;
 const searchTimeInterval = 300; // ms
 const siteChangeTimeout = 700; // ms
-const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite, mode}) => {
+const MainApp = ({ columns, sortIndex, sortAscending, data, dispatch, targetSite, mode }) => {
     const total = data.length;
     const searched = data.filter((item) => item.status === DONE || item.status === ERROR).length;
     const searchedPercent = (searched * 100 / total).toFixed(2);
@@ -76,6 +77,28 @@ const MainApp = ({columns, sortIndex, sortAscending, data, dispatch, targetSite,
                         width: "xxlarge"
                     }}
                 >
+                    <Columns
+                        masonry={false}
+                        size='small'
+                        justify='center'
+                        maxCount={2}>
+                        <Box align='center'
+                            pad='medium'
+                            margin='small'
+                            colorIndex='light-2'>
+                            <FormField label="API Key">
+                                <Input></Input>
+                            </FormField>
+                        </Box>
+                        <Box align='center'
+                            pad='medium'
+                            margin='small'
+                            colorIndex='light-2'>
+                            <FormField label="Search Engine ID">
+                                <Input></Input>
+                            </FormField>
+                        </Box>
+                    </Columns>
                     <Form
                         style={{
                             width: "100%"
